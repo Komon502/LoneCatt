@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To Lone Catt</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Sarabun', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(45deg, #ff6b9d, #c44569, #f8b500, #ff6348);
+            background-size: 400% 400%;
+            animation: gradientShift 8s ease infinite;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Strawberry field background pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(255, 182, 193, 0.3) 2px, transparent 2px),
+                radial-gradient(circle at 80% 80%, rgba(255, 20, 147, 0.2) 1px, transparent 1px),
+                radial-gradient(circle at 40% 60%, rgba(255, 105, 180, 0.3) 1.5px, transparent 1.5px);
+            background-size: 50px 50px, 30px 30px, 70px 70px;
+            animation: float 20s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(1deg); }
+            66% { transform: translateY(-10px) rotate(-1deg); }
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo {
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 3rem;
+            background: linear-gradient(45deg, #ff1493, #ff69b4, #ffc0cb, #ff1493);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: logoGlow 3s ease-in-out infinite, gradientShift 4s ease infinite;
+            text-shadow: 0 0 30px rgba(255, 20, 147, 0.5);
+            letter-spacing: 0.2em;
+            text-align: center;
+        }
+
+        @keyframes logoGlow {
+            0%, 100% { 
+                filter: drop-shadow(0 0 20px rgba(255, 20, 147, 0.8));
+                transform: scale(1);
+            }
+            50% { 
+                filter: drop-shadow(0 0 40px rgba(255, 105, 180, 1));
+                transform: scale(1.05);
+            }
+        }
+
+        .envelope-container {
+            position: relative;
+            cursor: pointer;
+            transform-style: preserve-3d;
+            transition: transform 0.3s ease;
+        }
+
+        .envelope-container:hover {
+            transform: scale(1.05) rotateY(5deg);
+        }
+
+        .envelope {
+            width: 300px;
+            height: 200px;
+            background: linear-gradient(45deg, #fff8dc, #f5f5dc);
+            border: 3px solid #d4af37;
+            border-radius: 10px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .envelope::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 150px solid transparent;
+            border-right: 150px solid transparent;
+            border-top: 100px solid #cd853f;
+            z-index: 2;
+        }
+
+        .envelope::after {
+            content: '💌';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2rem;
+            z-index: 3;
+        }
+
+        .instruction {
+            margin-top: 2rem;
+            font-size: 1.2rem;
+            color: white;
+            text-align: center;
+            font-weight: 600;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Letter Card Styles */
+        .letter-card {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            width: 90vw;
+            max-width: 500px;
+            height: 70vh;
+            max-height: 600px;
+            background: linear-gradient(135deg, #fff8dc, #fffacd);
+            border: 4px solid #d4af37;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            overflow-y: auto;
+        }
+
+        .letter-card.active {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        .letter-content {
+            padding: 2rem;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .letter-title {
+            font-size: 2rem;
+            color: #8b4513;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .love-message {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: #654321;
+            margin-bottom: 2rem;
+            font-weight: 400;
+        }
+
+        .wishes {
+            font-size: 1rem;
+            color: #8b4513;
+            font-style: italic;
+            margin-bottom: 2rem;
+        }
+
+        .close-btn {
+            background: linear-gradient(45deg, #ff6b9d, #ff1493);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .close-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(255, 20, 147, 0.4);
+        }
+
+        /* Heart Animation */
+        .heart {
+            position: fixed;
+            color: #ff1493;
+            font-size: 2rem;
+            pointer-events: none;
+            z-index: 999;
+            animation: heartFall 3s ease-out forwards;
+        }
+
+        @keyframes heartFall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Overlay */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 2.5rem;
+            }
+            
+            .envelope {
+                width: 250px;
+                height: 160px;
+            }
+            
+            .envelope::before {
+                border-left: 125px solid transparent;
+                border-right: 125px solid transparent;
+                border-top: 80px solid #cd853f;
+            }
+            
+            .letter-content {
+                padding: 1.5rem;
+            }
+            
+            .letter-title {
+                font-size: 1.5rem;
+            }
+            
+            .love-message {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="logo">LONE CATT</h1>
+        
+        <div class="envelope-container" onclick="openLetter()">
+            <div class="envelope"></div>
+        </div>
+        
+        <p class="instruction">🎀 คลิกที่ซองจดหมายเพื่อเปิดอ่านจดหมาย 🎀</p>
+    </div>
+
+    <div class="overlay" id="overlay" onclick="closeLetter()"></div>
+    
+    <div class="letter-card" id="letterCard">
+        <div class="letter-content">
+            <h2 class="letter-title">💕 จดหมายจาก NUENG 💕</h2>
+            
+            <div class="love-message">
+                เธอคือแสงสว่างในชีวิตผม<br>
+                คือดาวดวงเดียวที่ทำให้คืนมืดกลายเป็นสีสวย<br>
+                ทุกวันที่ได้เห็นรอยยิ้มของเธอ<br>
+                คือวันที่สวยงามที่สุดสำหรับผม<br><br>
+                
+                ผมหวังว่าเธอจะมีความสุขกับงาน<br>
+                ผมอยากให้เธอกินข้าวครบทุกมื้อและอย่าไปอดมันละ<br>
+                ผมอยากให้เธอได้ทำสิ่งที่รัก<br>
+                และผมจะคอยสนับสนุนเธอไปตลอด 💖
+            </div>
+            
+            <div class="wishes">
+                ขออวยพรให้เธอมีความสุขตลอดไป<br>
+                ขอให้สุขภาพแข็งแรง หน้าตายิ้มแย้มแจ่มใส<br>
+                ขอให้ทุกความฝันของเธอเป็นจริง<br>
+                และขอให้อย่าเครียดเรื่องงานจนไม่สบายละ 🌸
+            </div>
+            
+            <button class="close-btn" onclick="closeLetter()">ปิดจดหมาย 💕</button>
+        </div>
+    </div>
+
+    <script>
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.innerHTML = '💖';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = (Math.random() * 2 + 2) + 's';
+            heart.style.animationDelay = Math.random() * 0.5 + 's';
+            
+            // Random heart variations
+            const hearts = ['💖', '💕', '💗', '💓', '💝', '💘'];
+            heart.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
+            
+            document.body.appendChild(heart);
+            
+            setTimeout(() => {
+                heart.remove();
+            }, 3500);
+        }
+
+        function createHeartShower() {
+            for (let i = 0; i < 15; i++) {
+                setTimeout(() => {
+                    createHeart();
+                }, i * 200);
+            }
+        }
+
+        function openLetter() {
+            const overlay = document.getElementById('overlay');
+            const letterCard = document.getElementById('letterCard');
+            
+            overlay.classList.add('active');
+            letterCard.classList.add('active');
+            
+            // Create heart shower effect
+            createHeartShower();
+            
+            // Continue heart shower periodically while letter is open
+            const heartInterval = setInterval(createHeart, 800);
+            
+            // Store interval for cleanup
+            letterCard.heartInterval = heartInterval;
+        }
+
+        function closeLetter() {
+            const overlay = document.getElementById('overlay');
+            const letterCard = document.getElementById('letterCard');
+            
+            overlay.classList.remove('active');
+            letterCard.classList.remove('active');
+            
+            // Clear heart interval
+            if (letterCard.heartInterval) {
+                clearInterval(letterCard.heartInterval);
+            }
+        }
+
+        // Add some random floating hearts occasionally
+        setInterval(() => {
+            if (Math.random() < 0.3) {
+                createHeart();
+            }
+        }, 3000);
+
+        // Keyboard support
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeLetter();
+            }
+        });
+    </script>
+</body>
+</html>
